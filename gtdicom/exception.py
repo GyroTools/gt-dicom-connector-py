@@ -1,0 +1,2 @@
+class gtDicomException(Exception):
+    pass
