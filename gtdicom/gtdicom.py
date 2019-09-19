@@ -40,7 +40,7 @@ class gtDicom:
 
         return patients
 
-    def get_studies(self, patient_id, modality=None):
+    def get_studies(self, search_string=None, patient_id=None, modality=None):
         # Create our Identifier (query) dataset
         ds = Dataset()
 
@@ -49,7 +49,10 @@ class gtDicom:
 
         if modality:
             ds.Modality = modality
-        ds.PatientID = patient_id
+        if patient_id:
+            ds.PatientID = patient_id
+        if search_string:
+            ds.StudyDescription = search_string
         ds.QueryRetrieveLevel = 'STUDY'
 
         identifiers = Scu.c_find(self.connection.host, self.connection.port, ds, self.connection.calling_aet, self.connection.called_aet)

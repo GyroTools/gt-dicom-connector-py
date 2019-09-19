@@ -24,6 +24,8 @@ if not gt_dicom.echo():
 # series0 = gt_dicom.get_serie('1.2.826.0.1.3680043.9.6384.2.5000023.20190827121233.364.3')
 # series0.download('C:/Users/martin/Desktop/temp/dicom/PACS')
 
+studies = gt_dicom.get_studies('PAT*')
+
 patients = gt_dicom.get_patients('M*', modality='MR')
 
 series = gt_dicom.get_series(modality='MR')
