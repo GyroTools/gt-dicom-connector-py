@@ -12,7 +12,9 @@ class Study(BaseModel):
                   'StudyInstanceUID',
                   'StudyDescription',
                   'StudyDate',
-                  'StudyTime'
+                  'StudyTime',
+                  'Modality',
+                  'AccessionNumber'
                   ]
 
     def __init__(self):

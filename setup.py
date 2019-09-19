@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/gyrotools/gt-dicom-connector-py",
     packages=setuptools.find_packages(),
     install_requires=[
-        'requests>=2.0',
+        'pynetdicom',
     ],
     python_requires='>=3.6.0',
     classifiers=[

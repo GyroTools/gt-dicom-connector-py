@@ -20,3 +20,9 @@ class Series(DownloadMixin, BaseModel):
 
     def get_series(self):
         return [self]
+
+    def __str__(self):
+        str = ''
+        for attr in Series.attributes:
+            str += (attr + ': ' + getattr(self, attr, None) + '\n')
+        return str

@@ -3,6 +3,7 @@ from pydicom import Dataset
 from gtdicom.connection import gtDicomConnection
 from gtdicom.exception import gtDicomException
 from gtdicom.models.base import BaseModel
+from gtdicom.models.series import Series
 from gtdicom.models.study import Study
 from gtdicom.scu import Scu
 
@@ -15,7 +16,8 @@ class Patient(BaseModel):
                   'PatientAge',
                   'PatientWeight',
                   'ScheduledPerformingPhysicianName',
-                  'ReferringPhysicianName'
+                  'ReferringPhysicianName',
+                  'Modality',
                   ]
 
     def __init__(self):
@@ -44,6 +46,16 @@ class Patient(BaseModel):
             studies.append(study)
 
         return studies
+
+    def get_series(self):
+        series = []
+        studies = self.get_studies()
+        for study in studies:
+            cur_series = study.get_series()
+            series.extend(cur_series)
+        return series
+
+
 
 
 

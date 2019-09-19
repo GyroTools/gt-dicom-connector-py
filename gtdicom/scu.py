@@ -57,7 +57,7 @@ class Scu:
 
         if assoc.is_established:
             # Use the C-FIND service to send the identifier
-            responses = assoc.send_c_find(ds)
+            responses = assoc.send_c_find(ds, PatientRootQueryRetrieveInformationModelFind)
 
             for (status, identifier) in responses:
                 if status:
@@ -80,6 +80,7 @@ class Scu:
     def c_get(host, port, ds: Dataset, output_directory: os.path = None, overwrite=True, file_extension=None, ae_title='GETSCU', called_aet='ANY-SCP'):
         # Initialise the Application Entity
         ae = AE(ae_title=ae_title)
+        ae.dimse_timeout = 10
 
         for context in QueryRetrievePresentationContexts:
             ae.add_requested_context(context.abstract_syntax)
@@ -91,6 +92,8 @@ class Scu:
         ext_neg = []
         for context in StoragePresentationContexts:
             ext_neg.append(build_role(context.abstract_syntax, scp_role=True))
+
+        filenames = []
 
         def _handle_store(event):
             """Handle a C-STORE request."""
@@ -178,6 +181,7 @@ class Scu:
                 #   File Meta Information Header is written
                 ds.save_as(filename, write_like_original=False)
                 status_ds.Status = 0x0000  # Success
+                filenames.append(filename)
             except IOError:
                 raise gtDicomException('Could not write file to specified directory: ' + format(
                     os.path.dirname(filename)) + '. Directory may not exist or you may not have write permission')
@@ -201,12 +205,14 @@ class Scu:
 
         # Send query
         if assoc.is_established:
-            response = assoc.send_c_get(ds)
+            response = assoc.send_c_get(ds, PatientRootQueryRetrieveInformationModelGet)
 
             for status, identifier in response:
-                pass
+                if not status:
+                    raise gtDicomException('C-GET request rejected or timed out')
 
             assoc.release()
+            return filenames
         else:
             raise gtDicomException('Association rejected, aborted or never connected')
 
